@@ -7,7 +7,7 @@ public class CameraController : MonoBehaviour
 
     [Header("Camera Settings")]
     public Vector3 offset = new Vector3(2f, 2f, -10f);
-    [Range(0.0f, 0.5f)] public float smoothTime = 0.05f;
+    [Range(0.0f, 0.5f)] public float smoothTime = 0f;
 
     private Vector3 velocity = Vector3.zero;
 

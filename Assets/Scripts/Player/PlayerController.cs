@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -24,6 +25,12 @@ public class PlayerController : MonoBehaviour
     public bool isIdle = false;
     public bool isShooting = false;
     public bool isDashing = false;
+    
+    private bool wasRunning = false;
+
+    public event Action OnJumped;
+    public event Action OnRunning;
+    public event Action OnStopRunning;
 
     private void Start()
     {
@@ -44,6 +51,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         MovePlayer();
+        
     }
 
     private void HandleMoveInput(InputAction.CallbackContext context)
@@ -56,10 +64,11 @@ public class PlayerController : MonoBehaviour
        // if (colFeet)
         //{
             playerRigidbody.linearVelocity = new Vector2(playerRigidbody.linearVelocity.x, jumpForce);
-            /* isJumping = true;
-            
-            isIdle = false;
-            isRunning = false;*/
+            isJumping = true;
+            OnJumped?.Invoke(); //notify that the player is jumping
+        /*
+        isIdle = false;
+        isRunning = false;*/
         //}
 
     }
@@ -70,6 +79,23 @@ public class PlayerController : MonoBehaviour
         //transform.position += move * playerSpeed * Time.deltaTime;
 
         playerRigidbody.linearVelocity = new Vector2(moveInput.x * playerSpeed, playerRigidbody.linearVelocity.y); //moves in x according to the input and maintains velocity in y 
+
+        bool isCurrentlyRunning = moveInput.x != 0;
+
+        //when starts to move
+        if (isCurrentlyRunning && !wasRunning)
+        {
+            isRunning = true;
+            OnRunning?.Invoke();
+        }
+        else if (!isCurrentlyRunning && wasRunning) //when the player stops moving
+        {
+            isRunning = false;
+            OnStopRunning?.Invoke();
+        }
+
+
+        wasRunning = isCurrentlyRunning;
 
         /*if (isJumping)//if isJumping then is not running or idle
         {

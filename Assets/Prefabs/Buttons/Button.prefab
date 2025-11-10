@@ -305,7 +305,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f36aadbf21ba2b4a88f352c8ce59778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioSource: {fileID: 0}
   hoverSound: {fileID: 8300000, guid: 6e8d3489a9b38f64abbabd67742f1466, type: 3}
-  selectedSound: {fileID: 8300000, guid: 6e8d3489a9b38f64abbabd67742f1466, type: 3}
   clickSound: {fileID: 8300000, guid: 0f69c0d359738ff4f8e2ef42390cbf6c, type: 3}
