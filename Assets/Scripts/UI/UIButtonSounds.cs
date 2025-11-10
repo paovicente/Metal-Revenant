@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary /> implements interfaces which forces this class to implement their methods
 public class UIButtonSounds : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
-//implements interfaces which forces this class to implement their methods
 {
     public AudioClip hoverSound;
     public AudioClip clickSound;

@@ -149,8 +149,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startAction: {fileID: 392368643174621059, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  pauseAction: {fileID: 4534640381202076513, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   startScreenScene: StartScreen
   menuScene: Menu
+  pauseScene: PauseMenu
   fallbackCamera: {fileID: 2125654807}
 --- !u!4 &303086669
 Transform:
