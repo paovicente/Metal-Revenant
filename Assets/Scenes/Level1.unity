@@ -493,8 +493,8 @@ Transform:
   m_GameObject: {fileID: 1182020819}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.5, y: -3.11, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: -9.8745, y: -3.2219, z: 0}
+  m_LocalScale: {x: 0.8174588, y: 0.67802143, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -586,14 +586,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveAction: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   jumpAction: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  dashAction: {fileID: 0}
+  playerRigidbody: {fileID: 1182020823}
+  playerSpriteRenderer: {fileID: 0}
   playerSpeed: 2
   jumpForce: 8
-  playerRigidbody: {fileID: 1182020823}
+  isIdle: 0
   isRunning: 0
   isJumping: 0
-  isIdle: 0
-  isShooting: 0
   isDashing: 0
+  isFalling: 0
+  isShooting: 0
 --- !u!82 &1182020825
 AudioSource:
   m_ObjectHideFlags: 0

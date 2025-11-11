@@ -8,6 +8,11 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference jumpAction;
+    [SerializeField] private InputActionReference dashAction;
+
+    //Input animation
+    [SerializeField] private Rigidbody2D playerRigidbody;
+    [SerializeField] private SpriteRenderer playerSpriteRenderer;
 
     [Header("Inputs")]
     private Vector2 moveInput;
@@ -15,17 +20,17 @@ public class PlayerController : MonoBehaviour
     [Header("Player variables")]
     [SerializeField] private float playerSpeed = 2f;
     [SerializeField] private float jumpForce = 8f;
-    [SerializeField] private Rigidbody2D playerRigidbody;
     private BoxCollider2D playerCollider;
     private Vector3 playerPosition;
 
     [Header("Player states")]
+    public bool isIdle = false;
     public bool isRunning = false;
     public bool isJumping = false;
-    public bool isIdle = false;
-    public bool isShooting = false;
     public bool isDashing = false;
-    
+    public bool isFalling = false;
+    public bool isShooting = false;
+
     private bool wasRunning = false;
 
     public event Action OnJumped;
@@ -61,22 +66,23 @@ public class PlayerController : MonoBehaviour
 
     private void HandleJumpInput(InputAction.CallbackContext context) //the player will jump only if the player use the space bar and the feet are touching a platform or the floor
     {
-       // if (colFeet)
-        //{
+        
+        if (!isJumping && context.started)
+        {
             playerRigidbody.linearVelocity = new Vector2(playerRigidbody.linearVelocity.x, jumpForce);
             isJumping = true;
             OnJumped?.Invoke(); //notify that the player is jumping
-        /*
+        
         isIdle = false;
-        isRunning = false;*/
-        //}
+        isRunning = false;
+        }
 
     }
 
     private void MovePlayer()
     {
-        //Vector3 move = new Vector3(moveInput.x, 0); //the jump (move in y) will be managed separatedly
-        //transform.position += move * playerSpeed * Time.deltaTime;
+        Vector3 move = new Vector3(moveInput.x, 0); //the jump (move in y) will be managed separatedly
+        transform.position += move * playerSpeed * Time.deltaTime;
 
         playerRigidbody.linearVelocity = new Vector2(moveInput.x * playerSpeed, playerRigidbody.linearVelocity.y); //moves in x according to the input and maintains velocity in y 
 
@@ -97,7 +103,7 @@ public class PlayerController : MonoBehaviour
 
         wasRunning = isCurrentlyRunning;
 
-        /*if (isJumping)//if isJumping then is not running or idle
+        if (isJumping)//if isJumping then is not running or idle
         {
             isRunning = false;
             isIdle = false;
@@ -112,6 +118,6 @@ public class PlayerController : MonoBehaviour
         {
             isRunning = false;
             isIdle = true;
-        }*/
+        }
     }
 }
