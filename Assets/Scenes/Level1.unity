@@ -422,6 +422,7 @@ GameObject:
   - component: {fileID: 1182020824}
   - component: {fileID: 1182020825}
   - component: {fileID: 1182020826}
+  - component: {fileID: 1182020828}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -597,6 +598,10 @@ MonoBehaviour:
   isDashing: 0
   isFalling: 0
   isShooting: 0
+  dashSpeed: 10
+  dashDuration: 0.2
+  dashCooldown: 1
+  lastDashTime: -10
 --- !u!82 &1182020825
 AudioSource:
   m_ObjectHideFlags: 0
@@ -733,6 +738,25 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1182020828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1182020819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42ed759cd5f093f4c86cb9d6e5bad5d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isIdle: isIdle
+  isRunning: isRunning
+  isJumping: isJumping
+  isDashing: isDashing
+  isShooting: isShooting
+  animator: {fileID: 0}
+  playerRigidbody: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
