@@ -9,7 +9,7 @@ public class Bullets : MonoBehaviour
     {
         timer = lifeTime;
     }
-
+    /*
     private void Update()
     {
         timer -= Time.deltaTime;
@@ -23,6 +23,7 @@ public class Bullets : MonoBehaviour
     {
         BulletPool.Instance.ReturnBullet(gameObject);
     }
+    */
 }
 
 

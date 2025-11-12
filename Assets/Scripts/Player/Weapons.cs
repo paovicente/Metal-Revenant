@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class Weapons : MonoBehaviour
 {
+    /*
     private float offset = 1f;
 
     [Header("References")]
@@ -35,15 +36,16 @@ public class Weapons : MonoBehaviour
             shootAction.action.started -= HandleShootInput;
         }
     }
-
+    
     private void HandleShootInput(InputAction.CallbackContext context)
     {
         Shoot();
     }
 
+    
     private void Shoot()
     {
-        GameObject bullet = BulletPool.Instance.GetBullet();
+       GameObject bullet = BulletPool.Instance.GetBullet();
 
         bullet.transform.position = new Vector3(
             firePoint.parent.position.x,
@@ -57,6 +59,7 @@ public class Weapons : MonoBehaviour
         Vector2 shootDirection = playerRenderer.flipX ? Vector2.left : Vector2.right;
         bulletRigidbody.linearVelocity = shootDirection * bulletSpeed;
     }
+    */
 }
 
 
