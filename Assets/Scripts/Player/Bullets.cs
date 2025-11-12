@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Bullets : MonoBehaviour
 { 
+    /*
     [SerializeField] private float lifeTime = 1f;
     private float timer;
 
@@ -9,7 +10,7 @@ public class Bullets : MonoBehaviour
     {
         timer = lifeTime;
     }
-    /*
+    
     private void Update()
     {
         timer -= Time.deltaTime;

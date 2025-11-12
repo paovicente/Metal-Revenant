@@ -5,19 +5,31 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
+    
 {
 
     [Header("References")]
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference jumpAction;
     [SerializeField] private InputActionReference dashAction;
+    [SerializeField] private InputActionReference shootAction;
+    
 
     //Input animation
     [SerializeField] private Rigidbody2D playerRigidbody;
     [SerializeField] private SpriteRenderer playerSpriteRenderer;
 
+    [Header("Animator Controller")]
+    [SerializeField] private Animatorcontroller playerAnimator;
+  
     [Header("Inputs")]
     private Vector2 moveInput;
+
+    //This is for the player that won't be able to jump infinite times
+    [Header("GrounChecking")]
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Vector2  groundCheckRadius = new Vector2 (0.8f, 0.1f);
+    [SerializeField] private Vector2 groundBoxOffset = new Vector2(0f, -0.5f);
 
     [Header("Player variables")]
     [SerializeField] private float playerSpeed = 2f;
@@ -33,6 +45,9 @@ public class PlayerController : MonoBehaviour
     public bool isFalling = false;
     public bool isShooting = false;
 
+    //GroundChecking
+    private bool isGrounded = false;
+
     private bool wasRunning = false;
 
     public event Action OnJumped;
@@ -47,7 +62,7 @@ public class PlayerController : MonoBehaviour
     //Ver si esto puede andar el public Dash
   
 
-    private void Start()
+    private void Start() // Subscribe to the input system events
     {
         //This code separated into 2 different scripts one for rigidbody and another one for other actions
         //then in rigidbody controller script put a OnDisable and inside it disable the handle methods
@@ -60,25 +75,39 @@ public class PlayerController : MonoBehaviour
         jumpAction.action.canceled += HandleJumpInput;
 
         dashAction.action.started += HandleDashInput;
+        dashAction.action.performed += HandleDashInput;
+        dashAction.action.canceled += HandleDashInput;
 
         playerCollider = GetComponent<BoxCollider2D>();
 
     }
 
-    private void FixedUpdate()
+    private void FixedUpdate() 
     {
+        //GroundChecking
+        /*
+        Vector2 boxCenter = (Vector2)transform.position + groundBoxOffset;
+        isGrounded = Physics2D.OverlapBox(boxCenter, groundBoxSize, 0f.groundLayer);
+        
+        if (isGrounded)
+        {
+            isJumping = false;
+        }
+        */
         MovePlayer();
         
     }
 
-    private void HandleMoveInput(InputAction.CallbackContext context)
+    private void HandleMoveInput(InputAction.CallbackContext context) //Updates the Input System
     {
         moveInput = context.ReadValue<Vector2>();
     }
 
     private void HandleJumpInput(InputAction.CallbackContext context) //the player will jump only if the player use the space bar and the feet are touching a platform or the floor
     {
-        
+        Debug.Log("Jump input detected");
+          
+
         if (!isJumping && context.started)
         {
             playerRigidbody.linearVelocity = new Vector2(playerRigidbody.linearVelocity.x, jumpForce);
@@ -87,6 +116,7 @@ public class PlayerController : MonoBehaviour
         
         isIdle = false;
         isRunning = false;
+        isJumping = false;
         }
 
     }
@@ -164,6 +194,7 @@ public class PlayerController : MonoBehaviour
 
 
 }
+    
 
 
 

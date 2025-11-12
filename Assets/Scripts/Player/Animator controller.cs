@@ -7,8 +7,8 @@ public class Animatorcontroller : MonoBehaviour
     [SerializeField] private string isRunning = "isRunning";
     [SerializeField] private string isJumping = "isJumping";
     [SerializeField] private string isDashing = "isDashing";
-  //[SerializeField] private string isFalling = "isFalling";
-    [SerializeField] private string isShooting= "isShooting";
+  //  [SerializeField] private string isFalling = "isFalling";
+   // [SerializeField] private string isShooting= "isShooting";
 
 
     [Header("References")]
@@ -19,8 +19,8 @@ public class Animatorcontroller : MonoBehaviour
     private int isRunningHash;
     private int isJumpingHash;
     private int isDashingHash;
-   // private int isFallingHash;
-    private int isShootingHash;
+  // private int isFallingHash;
+   // private int isShootingHash;
 
     private void Awake()
         {
@@ -29,7 +29,7 @@ public class Animatorcontroller : MonoBehaviour
          isJumpingHash = Animator.StringToHash(isJumping);
          isDashingHash = Animator.StringToHash(isDashing);
          //isFallingHash = Animator.StringToHash(isFalling);
-         isShootingHash = Animator.StringToHash(isShooting);
+         //isShootingHash = Animator.StringToHash(isShooting);
         }
 
         public void UpdateAnimation(bool isRunning, bool isIdle, bool isJumping, bool isDashing,bool isShooting /*bool isFalling*/)
