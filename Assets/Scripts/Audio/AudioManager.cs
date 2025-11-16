@@ -8,6 +8,9 @@ public class AudioManager : MonoBehaviour
     [Header("Mixer")]
     public AudioMixer masterMixer;
 
+    private float currentMusic = 1f;
+    private float currentSFX = 1f;
+
     private void Awake()
     {
         if (instance == null)
@@ -15,7 +18,7 @@ public class AudioManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
 
-            LoadVolumes();
+            ApplyVolumes();
         }
         else
         {
@@ -23,24 +26,25 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void LoadVolumes()
+    private void ApplyVolumes()
     {
-        float music = PlayerPrefs.GetFloat("MusicVolume", 1f);
-        float sfx = PlayerPrefs.GetFloat("SFXVolume", 1f);
-
-        masterMixer.SetFloat("MusicVolume", Mathf.Log10(music) * 20f);
-        masterMixer.SetFloat("SFXVolume", Mathf.Log10(sfx) * 20f);
+        masterMixer.SetFloat("MusicVolume", Mathf.Log10(currentMusic) * 20f);
+        masterMixer.SetFloat("SFXVolume", Mathf.Log10(currentSFX) * 20f);
     }
 
     public void SetMusic(float value)
     {
-        masterMixer.SetFloat("MusicVolume", Mathf.Log10(value) * 20f);
-        PlayerPrefs.SetFloat("MusicVolume", value);
+        currentMusic = value;
+        ApplyVolumes();
     }
 
     public void SetSFX(float value)
     {
-        masterMixer.SetFloat("SFXVolume", Mathf.Log10(value) * 20f);
-        PlayerPrefs.SetFloat("SFXVolume", value);
+        currentSFX = value;
+        ApplyVolumes();
     }
+
+    //lets the UI read the current values
+    public float GetMusic() => currentMusic;
+    public float GetSFX() => currentSFX;
 }

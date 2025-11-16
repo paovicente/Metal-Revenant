@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 139922132}
   - component: {fileID: 139922131}
   - component: {fileID: 139922130}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -588,13 +588,11 @@ MonoBehaviour:
   moveAction: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   jumpAction: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   dashAction: {fileID: -7471211009204490832, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  shootAction: {fileID: 0}
   playerRigidbody: {fileID: 1182020823}
-  playerSpriteRenderer: {fileID: 1182020820}
-  playerAnimator: {fileID: 0}
+  playerAnimator: {fileID: 1182020828}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   groundCheckRadius: {x: 0.8, y: 0.1}
   groundBoxOffset: {x: 0, y: -0.5}
   playerSpeed: 2
@@ -602,13 +600,11 @@ MonoBehaviour:
   isIdle: 0
   isRunning: 0
   isJumping: 0
-  isDashing: 0
   isFalling: 0
-  isShooting: 0
+  isDashing: 0
   dashSpeed: 10
   dashDuration: 0.2
   dashCooldown: 1
-  lastDashTime: -10
 --- !u!82 &1182020825
 AudioSource:
   m_ObjectHideFlags: 0
@@ -761,6 +757,7 @@ MonoBehaviour:
   isRunning: isRunning
   isJumping: isJumping
   isDashing: isDashing
+  isFalling: isFalling
   animator: {fileID: 1182020827}
   playerRigidbody: {fileID: 1182020823}
 --- !u!1 &1875927738

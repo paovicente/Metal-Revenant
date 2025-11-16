@@ -1,200 +1,206 @@
 using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
-    
 {
-
     [Header("References")]
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference jumpAction;
     [SerializeField] private InputActionReference dashAction;
-    [SerializeField] private InputActionReference shootAction;
-    
 
-    //Input animation
     [SerializeField] private Rigidbody2D playerRigidbody;
-    [SerializeField] private SpriteRenderer playerSpriteRenderer;
-
-    [Header("Animator Controller")]
     [SerializeField] private Animatorcontroller playerAnimator;
-  
-    [Header("Inputs")]
-    private Vector2 moveInput;
 
-    //This is for the player that won't be able to jump infinite times
-    [Header("GrounChecking")]
+    [Header("Ground Check")]
     [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Vector2  groundCheckRadius = new Vector2 (0.8f, 0.1f);
+    [SerializeField] private Vector2 groundCheckRadius = new Vector2(0.8f, 0.1f);
     [SerializeField] private Vector2 groundBoxOffset = new Vector2(0f, -0.5f);
 
-    [Header("Player variables")]
+    [Header("Player Variables")]
     [SerializeField] private float playerSpeed = 2f;
     [SerializeField] private float jumpForce = 8f;
-    private BoxCollider2D playerCollider;
-    private Vector3 playerPosition;
-
-    [Header("Player states")]
-    public bool isIdle = false;
-    public bool isRunning = false;
-    public bool isJumping = false;
-    public bool isDashing = false;
-    public bool isFalling = false;
-    public bool isShooting = false;
-
-    //GroundChecking
-    private bool isGrounded = false;
-
-    private bool wasRunning = false;
 
     public event Action OnJumped;
     public event Action OnRunning;
     public event Action OnStopRunning;
 
-    [Header("Dash variables")]
+    public bool isIdle;
+    public bool isRunning;
+    public bool isJumping;
+    public bool isFalling = false;
+    public bool isDashing;
+    private bool wasRunning = false;
+
+    private bool isGrounded;
+    private Vector2 moveInput;
+
+    [Header("Dash")]
     [SerializeField] private float dashSpeed = 10f;
     [SerializeField] private float dashDuration = 0.2f;
     [SerializeField] private float dashCooldown = 1f;
-    [SerializeField] private float lastDashTime = -10f;
-    //Ver si esto puede andar el public Dash
-  
+    private float lastDashTime = -10f;
 
-    private void Start() // Subscribe to the input system events
+    private void Start()
     {
-        //This code separated into 2 different scripts one for rigidbody and another one for other actions
-        //then in rigidbody controller script put a OnDisable and inside it disable the handle methods
         moveAction.action.started += HandleMoveInput;
         moveAction.action.performed += HandleMoveInput;
         moveAction.action.canceled += HandleMoveInput;
 
         jumpAction.action.started += HandleJumpInput;
-        jumpAction.action.performed += HandleJumpInput;
-        jumpAction.action.canceled += HandleJumpInput;
 
         dashAction.action.started += HandleDashInput;
-        dashAction.action.performed += HandleDashInput;
-        dashAction.action.canceled += HandleDashInput;
-
-        playerCollider = GetComponent<BoxCollider2D>();
-
     }
 
-    private void FixedUpdate() 
+    private void Update()
     {
-        //GroundChecking
-        /*
-        Vector2 boxCenter = (Vector2)transform.position + groundBoxOffset;
-        isGrounded = Physics2D.OverlapBox(boxCenter, groundBoxSize, 0f.groundLayer);
-        
-        if (isGrounded)
-        {
-            isJumping = false;
-        }
-        */
-        MovePlayer();
-        
+        GroundCheck();
+        UpdateStates();
+
+        playerAnimator.UpdateAnimation(
+            isRunning,
+            isIdle,
+            isJumping,
+            isDashing,
+            isFalling
+        );
     }
 
-    private void HandleMoveInput(InputAction.CallbackContext context) //Updates the Input System
+    /*MovePlayer() is called in FixedUpdate because Rigidbody movement must run in the physics loop.
+    This ensures smooth. We skip it during dash to avoid overriding dash velocity*/
+
+    private void FixedUpdate()
+    {
+        if (!isDashing)
+            MovePlayer();
+    }
+
+    // ----------- INPUT FUNCTIONS -----------
+
+    private void HandleMoveInput(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
     }
 
-    private void HandleJumpInput(InputAction.CallbackContext context) //the player will jump only if the player use the space bar and the feet are touching a platform or the floor
+    private void HandleJumpInput(InputAction.CallbackContext context)
     {
-        Debug.Log("Jump input detected");
-          
+        if (!context.started) return;
 
-        if (!isJumping && context.started)
+        if (isGrounded)
         {
-            playerRigidbody.linearVelocity = new Vector2(playerRigidbody.linearVelocity.x, jumpForce);
+            playerRigidbody.linearVelocity =
+                new Vector2(playerRigidbody.linearVelocity.x, jumpForce);
+
             isJumping = true;
-            OnJumped?.Invoke(); //notify that the player is jumping
-        
-        isIdle = false;
-        isRunning = false;
-        isJumping = false;
-        }
+            isFalling = false;
 
-    }
-
-    private void MovePlayer()
-    {
-        Vector3 move = new Vector3(moveInput.x, 0); //the jump (move in y) will be managed separatedly
-        transform.position += move * playerSpeed * Time.deltaTime;
-
-        if (isDashing) return; //if it's dashing then do not change the velocity
-
-        playerRigidbody.linearVelocity = new Vector2(moveInput.x * playerSpeed, playerRigidbody.linearVelocity.y); //moves in x according to the input and maintains velocity in y 
-
-        bool isCurrentlyRunning = moveInput.x != 0;
-
-        //when starts to move
-        if (isCurrentlyRunning && !wasRunning)
-        {
-            isRunning = true;
-            OnRunning?.Invoke();
-        }
-        else if (!isCurrentlyRunning && wasRunning) //when the player stops moving
-        {
-            isRunning = false;
-            OnStopRunning?.Invoke();
-        }
-       
-        wasRunning = isCurrentlyRunning;
-
-        if (isJumping)//if isJumping then is not running or idle
-        {
-            isRunning = false;
-            isIdle = false;
-        }
-        else if (moveInput.x != 0) //if the player is not jumping means that is on a platform or floor, and he moves then is running
-        {
-            isRunning = true;
-            isIdle = false;
-        }
-        else //if is not jumping means that is on a platform or floor, and if he dont move then is idle
-        {
-            isRunning = false;
-            isIdle = true;
+            OnJumped?.Invoke();
         }
     }
-        private void HandleDashInput(InputAction.CallbackContext context)
+
+    /// <summary>
+    /// Allow dash only if not currently dashing and the cooldown has fully elapsed.
+    /// </summary>
+    private void HandleDashInput(InputAction.CallbackContext context)
     {
-        if (context.started && !isDashing && Time.time >= lastDashTime + dashCooldown)
+        if (!context.started) return;
+
+        if (!isDashing && Time.time >= lastDashTime + dashCooldown)
         {
             StartCoroutine(PerformDash());
         }
     }
-    private IEnumerator PerformDash() 
+
+    // ----------- MOVEMENT -----------
+
+    private void MovePlayer()
+    {
+        playerRigidbody.linearVelocity =
+            new Vector2(moveInput.x * playerSpeed, playerRigidbody.linearVelocity.y);
+    }
+
+    // ----------- DASH -----------
+
+    private IEnumerator PerformDash()
     {
         isDashing = true;
         lastDashTime = Time.time;
 
-        float dashDirection = Mathf.Sign(moveInput.x);
-        if (dashDirection == 0) dashDirection = transform.localScale.x;
+        float direction = Mathf.Sign(moveInput.x);
+        if (direction == 0)
+            direction = transform.localScale.x;
 
         float elapsed = 0f;
         while (elapsed < dashDuration)
         {
-            playerRigidbody.linearVelocity = new Vector2(dashDirection * dashSpeed, 0f);
+            playerRigidbody.linearVelocity = new Vector2(direction * dashSpeed, 0f);
             elapsed += Time.deltaTime;
-
-            Debug.Log("Dash");
-
             yield return null;
         }
-        isDashing = false;
 
+        isDashing = false;
     }
 
+    /// <summary>
+    /// Checks if the player is grounded using an OverlapBox under the collider
+    /// Updates isGrounded, and sets falling/jumping states based on vertical velocity
+    /// </summary>
+    private void GroundCheck()
+    {
+        BoxCollider2D col = GetComponent<BoxCollider2D>();
 
+        Vector2 boxCenter = (Vector2)transform.position + new Vector2(0, -col.bounds.extents.y - 0.05f);
+
+        Vector2 boxSize = new Vector2(col.bounds.size.x * 0.9f, 0.1f);
+
+        isGrounded = Physics2D.OverlapBox(
+            boxCenter,
+            boxSize,
+            0,
+            groundLayer
+        );
+
+        Debug.Log("isGrounded: " + isGrounded);
+
+        if (isGrounded)
+        {
+            if (!isJumping)
+                isFalling = false;
+        }
+
+        if (!isGrounded && playerRigidbody.linearVelocity.y < -0.1f)
+        {
+            isFalling = true;
+            isJumping = false;
+        }
+    }
+
+    private void UpdateStates()
+    {
+        bool runningNow = moveInput.x != 0 && isGrounded;
+
+        if (runningNow && !wasRunning)
+            OnRunning?.Invoke();
+
+        if (!runningNow && wasRunning)
+            OnStopRunning?.Invoke();
+
+        wasRunning = runningNow;
+
+        isRunning = runningNow;
+        isIdle = moveInput.x == 0 && isGrounded && !isJumping;
+
+        if (isFalling) isRunning = false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Vector2 boxCenter = (Vector2)transform.position + new Vector2(0, -0.45f);
+        Vector2 boxSize = new Vector2(0.7f, 0.1f);
+
+        Gizmos.DrawWireCube(boxCenter, boxSize);
+    }
 
 }
-    
-
-
-

@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerSounds : MonoBehaviour
 {
     private PlayerController playerController;
+
     [Header("Audio References")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip jumpClip;
@@ -15,6 +16,7 @@ public class PlayerSounds : MonoBehaviour
     private void Start()
     {
         playerController = GetComponent<PlayerController>();
+
         if (playerController != null)
         {
             playerController.OnJumped += PlayJumpSound;
@@ -54,7 +56,7 @@ public class PlayerSounds : MonoBehaviour
         }
     }
 
-    private void OnDestroy() //will be used on player death
+    private void OnDestroy()
     {
         if (playerController != null)
         {
@@ -62,7 +64,5 @@ public class PlayerSounds : MonoBehaviour
             playerController.OnRunning -= PlayRunSound;
             playerController.OnStopRunning -= StopRunLoop;
         }
-            
     }
-
 }
