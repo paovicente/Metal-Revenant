@@ -6,16 +6,19 @@ using UnityEngine.SceneManagement;
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager instance;
+
+    [Header("Input Actions")]
     [SerializeField] private InputActionReference startAction;
     [SerializeField] private InputActionReference pauseAction;
 
+    [Header("References")]
     [SerializeField] private string startScreenScene = "StartScreen";
     [SerializeField] private string menuScene = "Menu";
-    [SerializeField] private string pauseScene = "PauseMenu";
+    [SerializeField] private GameObject pausePanel;
     [SerializeField] private Camera fallbackCamera;
+    
     private Scene activeScene;
-
-    private bool isPaused = false;
+    public bool isPaused = false;
 
     private void Awake()
     {
@@ -70,7 +73,7 @@ public class LevelManager : MonoBehaviour
             return;
 
         if (!isPaused)
-            StartCoroutine(LoadPauseMenu());
+            PauseGame();
         else
             ResumeGame();
     }
@@ -83,7 +86,7 @@ public class LevelManager : MonoBehaviour
     private IEnumerator LoadSceneDelayed(string sceneName, float delay)
     {
         yield return new WaitForSeconds(delay);
-        
+
         Scene previousScene = SceneManager.GetActiveScene();
 
         //load the new scene
@@ -101,12 +104,18 @@ public class LevelManager : MonoBehaviour
         yield return SceneManager.UnloadSceneAsync(previousScene);   
     }
 
-    private IEnumerator LoadPauseMenu()
+    public void PauseGame()
     {
         isPaused = true;
         Time.timeScale = 0f;
 
-        yield return SceneManager.LoadSceneAsync(pauseScene, LoadSceneMode.Additive);
+        if (pausePanel != null)
+            pausePanel.SetActive(true);
+
+        foreach (Animator anim in pausePanel.GetComponentsInChildren<Animator>())
+        {
+            anim.updateMode = AnimatorUpdateMode.UnscaledTime;
+        }
     }
 
     public void ResumeGame()
@@ -114,7 +123,30 @@ public class LevelManager : MonoBehaviour
         isPaused = false;
         Time.timeScale = 1f;
 
-        SceneManager.UnloadSceneAsync(pauseScene);
+        if (pausePanel != null)
+            pausePanel.SetActive(false);          
+    }
+
+    public void ReturnToMenuFromPause(float delay = 0f)
+    {
+        isPaused = false;
+        Time.timeScale = 1f;
+
+        if (pausePanel != null)
+            pausePanel.SetActive(false);
+
+        StartCoroutine(LoadSceneDelayed(menuScene, delay));
+    }
+
+    public void ExitGame()
+    {
+        Debug.Log("Exit Game...");
+
+        Application.Quit();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 }
 
