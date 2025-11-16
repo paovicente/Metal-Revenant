@@ -53,6 +53,17 @@ public class PlayerController : MonoBehaviour
         dashAction.action.started += HandleDashInput;
     }
 
+    private void OnEnable()
+    {
+        jumpAction.action.started += HandleJumpInput;
+    }
+
+    private void OnDisable()
+    {
+        jumpAction.action.started -= HandleJumpInput;
+    }
+
+
     private void Update()
     {
         GroundCheck();

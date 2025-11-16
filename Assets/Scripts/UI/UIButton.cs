@@ -24,7 +24,17 @@ public class UIButton : MonoBehaviour
                 return;
             }
 
-            LevelManager.instance.LoadScene(sceneName, sound.clickSound.length);
+            if (LevelManager.instance.isPaused && string.IsNullOrEmpty(sceneName))
+            {
+                LevelManager.instance.ResumeGame();
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(sceneName))
+            {
+                LevelManager.instance.LoadScene(sceneName, sound.clickSound.length);
+            }
+
         });
     }
 

@@ -113,9 +113,11 @@ public class LevelManager : MonoBehaviour
             pausePanel.SetActive(true);
 
         foreach (Animator anim in pausePanel.GetComponentsInChildren<Animator>())
-        {
             anim.updateMode = AnimatorUpdateMode.UnscaledTime;
-        }
+
+        PlayerPauseHandler playerHandler = GetPlayerHandler();
+        if (playerHandler != null)
+            playerHandler.PausePlayer();
     }
 
     public void ResumeGame()
@@ -123,8 +125,13 @@ public class LevelManager : MonoBehaviour
         isPaused = false;
         Time.timeScale = 1f;
 
+        Debug.Log("RESUME GAME");
         if (pausePanel != null)
-            pausePanel.SetActive(false);          
+            pausePanel.SetActive(false);
+
+        PlayerPauseHandler playerHandler = GetPlayerHandler();
+        if (playerHandler != null)
+            playerHandler.ResumePlayer();
     }
 
     public void ReturnToMenuFromPause(float delay = 0f)
@@ -136,6 +143,11 @@ public class LevelManager : MonoBehaviour
             pausePanel.SetActive(false);
 
         StartCoroutine(LoadSceneDelayed(menuScene, delay));
+    }
+
+    private PlayerPauseHandler GetPlayerHandler()
+    {
+        return FindFirstObjectByType<PlayerPauseHandler>();
     }
 
     public void ExitGame()

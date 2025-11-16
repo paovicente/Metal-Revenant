@@ -419,10 +419,11 @@ GameObject:
   - component: {fileID: 1182020820}
   - component: {fileID: 1182020822}
   - component: {fileID: 1182020823}
-  - component: {fileID: 1182020824}
   - component: {fileID: 1182020825}
+  - component: {fileID: 1182020824}
   - component: {fileID: 1182020826}
   - component: {fileID: 1182020828}
+  - component: {fileID: 1182020829}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -760,6 +761,21 @@ MonoBehaviour:
   isFalling: isFalling
   animator: {fileID: 1182020827}
   playerRigidbody: {fileID: 1182020823}
+--- !u!114 &1182020829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1182020819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd8fe308ebb0f44869cb2eae5fbda8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 1182020827}
+  audioSource: {fileID: 1182020825}
+  playerController: {fileID: 1182020824}
 --- !u!1 &1875927738
 GameObject:
   m_ObjectHideFlags: 0
@@ -771,7 +787,7 @@ GameObject:
   - component: {fileID: 1875927741}
   - component: {fileID: 1875927740}
   - component: {fileID: 1875927739}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -27,6 +27,10 @@ public class PlayerSounds : MonoBehaviour
 
     private void PlayJumpSound()
     {
+
+        if (LevelManager.instance != null && LevelManager.instance.isPaused)
+            return;
+
         if (audioSource != null && jumpClip != null)
         {
             audioSource.pitch = Random.Range(minPitch, maxPitch);
@@ -36,6 +40,9 @@ public class PlayerSounds : MonoBehaviour
 
     private void PlayRunSound()
     {
+        if (LevelManager.instance != null && LevelManager.instance.isPaused)
+            return;
+
         if (audioSource != null && runClip != null)
         {
             audioSource.clip = runClip;
@@ -48,6 +55,9 @@ public class PlayerSounds : MonoBehaviour
 
     private void StopRunLoop()
     {
+        if (LevelManager.instance != null && LevelManager.instance.isPaused)
+            return;
+
         if (audioSource != null && audioSource.isPlaying)
         {
             audioSource.Stop();
