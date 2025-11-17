@@ -75,4 +75,5 @@ public class PlayerSounds : MonoBehaviour
             playerController.OnStopRunning -= StopRunLoop;
         }
     }
+    
 }

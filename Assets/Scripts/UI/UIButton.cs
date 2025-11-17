@@ -32,7 +32,7 @@ public class UIButton : MonoBehaviour
 
             if (!string.IsNullOrEmpty(sceneName))
             {
-                LevelManager.instance.LoadScene(sceneName, sound.clickSound.length);
+                //LevelManager.instance.LoadScene(sceneName, sound.clickSound.length);
             }
 
         });
