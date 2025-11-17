@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9f8982df40999d44f8b7b53ea8c5d19f
+guid: 49b3d5c7f7db2c844bc32fe1167e787d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3904987841225192687
-    second: Idle_n_0_0
+      213: -3522017782156579802
+    second: Dash_n_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Idle_n_0_0
+      name: Dash_n_0
       rect:
         serializedVersion: 2
-        x: 1450
-        y: 73
-        width: 123
-        height: 235
+        x: 246
+        y: 81
+        width: 137
+        height: 214
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,20 +115,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 11b8d877f32bec9c0800000000000000
-      internalID: -3904987841225192687
+      spriteID: 62ca2f1dc774f1fc0800000000000000
+      internalID: -3522017782156579802
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Idle_n_0_1
+      name: Dash_n_1
       rect:
         serializedVersion: 2
-        x: 1253
-        y: 72
-        width: 117
-        height: 232
+        x: 547
+        y: 81
+        width: 137
+        height: 216
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,130 +137,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 934cfc458011cd548958028b8fb74f85
-      internalID: 1088675877
+      spriteID: 9f44f75c193c4db42a0e44e3a327c53d
+      internalID: -1837292044
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Idle_n_0_2
+      name: Dash_n_2
       rect:
         serializedVersion: 2
-        x: 1052
-        y: 71
-        width: 117
-        height: 233
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 80b94bae7717f9c4b85f21b923195479
-      internalID: -1579161718
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Idle_n_0_3
-      rect:
-        serializedVersion: 2
-        x: 852
-        y: 71
-        width: 117
-        height: 224
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ca88fd3d46217d74eb7c18316c8bb625
-      internalID: -860817080
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Idle_n_0_4
-      rect:
-        serializedVersion: 2
-        x: 654
-        y: 71
-        width: 119
-        height: 219
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fa138947406faf246820db05a19e3203
-      internalID: -782173053
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Idle_n_0_5
-      rect:
-        serializedVersion: 2
-        x: 450
-        y: 73
-        width: 118
-        height: 222
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 75eb2b500d975cf42820321b2c7ac851
-      internalID: -459572837
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Idle_n_0_6
-      rect:
-        serializedVersion: 2
-        x: 252
-        y: 73
-        width: 118
-        height: 232
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 85b1e66c9fd795b4ea2c0d5288129fb7
-      internalID: 1863112015
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Idle_n_0_7
-      rect:
-        serializedVersion: 2
-        x: 53
-        y: 74
+        x: 857
+        y: 85
         width: 115
-        height: 236
+        height: 214
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -269,8 +159,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a87f9a0e18472f141a31f8c407835fe8
-      internalID: -1276712258
+      spriteID: 19e8b3ddbe47bc445bd4e39f2566c129
+      internalID: 2084927325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dash_n_3
+      rect:
+        serializedVersion: 2
+        x: 1159
+        y: 90
+        width: 110
+        height: 215
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1099505b2ff60ab4fab5e6029dc2bbec
+      internalID: 268469365
       vertices: []
       indices: 
       edges: []
@@ -279,7 +191,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 8739e401e4af286489093a81170ae8b7
+    spriteID: 1f2227521854c9a459ae21bacc1919bb
     internalID: 0
     vertices: []
     indices: 
@@ -289,14 +201,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Idle_n_0_0: -3904987841225192687
-      Idle_n_0_1: 1088675877
-      Idle_n_0_2: -1579161718
-      Idle_n_0_3: -860817080
-      Idle_n_0_4: -782173053
-      Idle_n_0_5: -459572837
-      Idle_n_0_6: 1863112015
-      Idle_n_0_7: -1276712258
+      Dash_n_0: -3522017782156579802
+      Dash_n_1: -1837292044
+      Dash_n_2: 2084927325
+      Dash_n_3: 268469365
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
