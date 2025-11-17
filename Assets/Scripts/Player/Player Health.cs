@@ -4,78 +4,6 @@ using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-        public int maxHealth = 100;
-        private int currentHealth;
-
-        public Image healthBarFill;
-
-        [Header("Damage Settings")]
-        public float damageCooldown = 2f;
-        private float lastDamageTime = -10f;
-
-        private void Start()
-        {
-            //AGREGAR ESTO: Cargar vida guardada si existe
-            if (PlayerPrefs.HasKey("PlayerHealth"))                      //AGREGAR ESTO
-                currentHealth = PlayerPrefs.GetInt("PlayerHealth");      //AGREGAR ESTO
-            else
-                currentHealth = maxHealth;
-
-            UpdateHealthBar();
-        }
-
-        public void TakeDamage(int damage)
-        {
-            if (Time.time - lastDamageTime < damageCooldown)
-                return;
-
-            currentHealth -= damage;
-            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-            lastDamageTime = Time.time;
-
-            Debug.Log("Player took damage: " + damage + ". Current health: " + currentHealth);
-
-            UpdateHealthBar();
-
-            //AGREGAR ESTO: Guardar vida cada vez que se modifica
-            PlayerPrefs.SetInt("PlayerHealth", currentHealth);           //AGREGAR ESTO
-            PlayerPrefs.Save();                                          //AGREGAR ESTO
-
-            if (currentHealth <= 0)
-                Die();
-        }
-
-        private void UpdateHealthBar()
-        {
-            if (healthBarFill != null)
-            {
-                float fillAmount = (float)currentHealth / maxHealth;
-                healthBarFill.fillAmount = fillAmount;
-
-                if (fillAmount > 0.6f)
-                    healthBarFill.color = Color.green;
-                else if (fillAmount > 0.3f)
-                    healthBarFill.color = Color.yellow;
-                else
-                    healthBarFill.color = Color.red;
-            }
-        }
-
-        private void Die()
-        {
-            Debug.Log("Player died.");
-
-            PlayerPrefs.SetString("GameResult", "Game Over");
-
-            //AGREGAR ESTO: Resetear vida al morir
-            PlayerPrefs.DeleteKey("PlayerHealth");                       //AGREGAR ESTO
-
-            LevelManager.instance.LoadScene("ResultScene");
-
-            Destroy(gameObject);
-        }
-    
-    /*
     public int maxHealth = 100;
     private int currentHealth;
 
@@ -136,5 +64,5 @@ public class PlayerHealth : MonoBehaviour
 
         Destroy(gameObject);
     }
-    */
+
 }
