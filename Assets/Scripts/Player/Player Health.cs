@@ -1,55 +1,61 @@
 using UnityEngine;
-//using UnityEngine.UI;
-
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    /*
-    public int vidaMaxima = 5;
-    private int vidaActual;
+    public int maxHealth = 100;
+    private int currentHealth;
 
-    public Image barraRelleno; // Imagen que se llena (tipo Filled)
+    public Image healthBarFill;
 
-    void Start()
+    [Header("Damage Settings")]
+    public float damageCooldown = 2f; // 2 second of invulnerability
+    private float lastDamageTime = -10f; // so player can take damage at start
+
+    private void Start()
     {
-        vidaActual = vidaMaxima;
-        ActualizarBarra();
+        currentHealth = maxHealth;
+        UpdateHealthBar();
     }
 
-    public void RecibirDa?o(int da?o)
+    //public function to receive damage
+    public void TakeDamage(int damage)
     {
-        vidaActual -= da?o;
-        vidaActual = Mathf.Clamp(vidaActual, 0, vidaMaxima);
-        Debug.Log("Jugador recibi? da?o. Vida actual: " + vidaActual);
-        ActualizarBarra();
+        if (Time.time - lastDamageTime < damageCooldown)
+            return; // still in cooldown, ignore damage
 
-        if (vidaActual <= 0)
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        lastDamageTime = Time.time; // reset cooldown
+        
+        Debug.Log("Player took damage: " + damage + ". Current health: " + currentHealth);
+
+        UpdateHealthBar();
+
+        //if (currentHealth <= 0)
+            //Die();
+    }
+
+    private void UpdateHealthBar()
+    {
+        if (healthBarFill != null)
         {
-            Morir();
-
+            healthBarFill.fillAmount = (float)currentHealth / maxHealth;
         }
     }
 
-    void ActualizarBarra()
+    /*private void Die()
     {
-        if (barraRelleno != null)
-        {
-            float fill = (float)vidaActual / vidaMaxima;
-            barraRelleno.fillAmount = fill;
-        }
-    }
+        Debug.Log("Player died.");
+        
+        if (GameManager.Instance != null)
+            GameManager.Instance.GameOver();
 
-    void Morir()
-    {
-        Debug.Log("Jugador muri?.");
-        GameManager.Instance.GameOver();
-        Destroy(gameObject);
-        GameObject musica = GameObject.Find("MusicaFondo");
-        if (musica != null)
-        {
-            Destroy(musica);
-        }
-    }
-    */
+        /*Destroy(gameObject);
+
+        GameObject music = GameObject.Find("BackgroundMusic");
+        if (music != null)
+            Destroy(music);
+    }*/
+
 }
-

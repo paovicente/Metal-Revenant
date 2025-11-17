@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - EnemyPatrol
   layers:
   - Default
   - TransparentFX
@@ -40,6 +41,9 @@ TagManager:
   m_SortingLayers:
   - name: BackGround
     uniqueID: 545025127
+    locked: 0
+  - name: Platforms
+    uniqueID: 4026351333
     locked: 0
   - name: Default
     uniqueID: 0

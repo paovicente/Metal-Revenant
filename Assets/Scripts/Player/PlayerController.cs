@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private Rigidbody2D playerRigidbody;
     [SerializeField] private Animatorcontroller playerAnimator;
+    [SerializeField] private SpriteRenderer playerSpriteRenderer;
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask groundLayer;
@@ -92,6 +93,8 @@ public class PlayerController : MonoBehaviour
     private void HandleMoveInput(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
+
+        playerSpriteRenderer.flipX = moveInput.x < 0;
     }
 
     private void HandleJumpInput(InputAction.CallbackContext context)
