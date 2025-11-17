@@ -40,8 +40,17 @@ public class PlayerHealth : MonoBehaviour
     {
         if (healthBarFill != null)
         {
-            healthBarFill.fillAmount = (float)currentHealth / maxHealth;
+            float fillAmount = (float)currentHealth / maxHealth;
+            healthBarFill.fillAmount = fillAmount;
+
+            if (fillAmount > 0.6f)
+                healthBarFill.color = Color.green;   
+            else if (fillAmount > 0.3f)
+                healthBarFill.color = Color.yellow; 
+            else
+                healthBarFill.color = Color.red;     
         }
+
     }
 
     /*private void Die()
