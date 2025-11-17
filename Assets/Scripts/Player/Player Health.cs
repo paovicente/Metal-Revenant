@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+/*
 public class PlayerHealth : MonoBehaviour
 {
     public int maxHealth = 100;
@@ -65,4 +65,76 @@ public class PlayerHealth : MonoBehaviour
         Destroy(gameObject);
     }
 
+}*/
+public class PlayerHealth : MonoBehaviour
+{
+    public int maxHealth = 100;
+    private int currentHealth;
+
+    public Image healthBarFill;
+
+    [Header("Damage Settings")]
+    public float damageCooldown = 2f;
+    private float lastDamageTime = -10f;
+
+    private void Start()
+    {
+        if (PlayerPrefs.HasKey("PlayerHealth"))                      
+            currentHealth = PlayerPrefs.GetInt("PlayerHealth");      
+        else
+            currentHealth = maxHealth;
+
+        UpdateHealthBar();
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (Time.time - lastDamageTime < damageCooldown)
+            return;
+
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        lastDamageTime = Time.time;
+
+        Debug.Log("Player took damage: " + damage + ". Current health: " + currentHealth);
+
+        UpdateHealthBar();
+
+        //save life each time it is modified
+        PlayerPrefs.SetInt("PlayerHealth", currentHealth);           
+        PlayerPrefs.Save();                                          
+
+        if (currentHealth <= 0)
+            Die();
+    }
+
+    private void UpdateHealthBar()
+    {
+        if (healthBarFill != null)
+        {
+            float fillAmount = (float)currentHealth / maxHealth;
+            healthBarFill.fillAmount = fillAmount;
+
+            if (fillAmount > 0.6f)
+                healthBarFill.color = Color.green;
+            else if (fillAmount > 0.3f)
+                healthBarFill.color = Color.yellow;
+            else
+                healthBarFill.color = Color.red;
+        }
+    }
+
+    private void Die()
+    {
+        Debug.Log("Player died.");
+
+        PlayerPrefs.SetString("GameResult", "Game Over");
+
+        //reset life when the player die
+        PlayerPrefs.DeleteKey("PlayerHealth");                       
+
+        LevelManager.instance.LoadScene("ResultScene");
+
+        Destroy(gameObject);
+    }
 }

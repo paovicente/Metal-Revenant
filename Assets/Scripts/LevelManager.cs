@@ -23,6 +23,7 @@ public class LevelManager : MonoBehaviour
 
     private void Awake()
     {
+        PlayerPrefs.DeleteKey("PlayerHealth");
         if (instance == null)
         {
             instance = this;

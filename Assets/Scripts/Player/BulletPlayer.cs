@@ -7,6 +7,7 @@ public class BulletPlayer : MonoBehaviour
     [SerializeField] private float lifeTime = 2f;
 
     private float lifeTimer;
+    private int damage = 15;
 
     private void OnEnable()
     {
@@ -28,7 +29,7 @@ public class BulletPlayer : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         {
-            //collision.GetComponent<EnemyHealth>()?.TakeDamage(1);
+            collision.GetComponent<EnemyHealth>()?.TakeDamage(damage);
 
             BulletPoolPlayer.Instance.ReturnBullet(gameObject);
         }

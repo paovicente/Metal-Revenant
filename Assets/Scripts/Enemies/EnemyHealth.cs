@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
-    [SerializeField] private int maxHealth = 50;
+    [SerializeField] private int maxHealth = 100;
     private int CurrentHealth;
 
     private void OnEnable()
