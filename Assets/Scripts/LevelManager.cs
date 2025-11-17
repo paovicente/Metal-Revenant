@@ -35,10 +35,10 @@ public class LevelManager : MonoBehaviour
         }
 
         //when the game starts, this load the start screen instantly
-        //SceneManager.LoadSceneAsync(startScreenScene, LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync(startScreenScene, LoadSceneMode.Additive);
        
     }
-    /*
+    
     private void Start()
     {
         activeScene = SceneManager.GetSceneByName(startScreenScene);
@@ -104,7 +104,7 @@ public class LevelManager : MonoBehaviour
         
         yield return SceneManager.UnloadSceneAsync(previousScene);   
     }
-    */
+    
 
     public void PauseGame()
     {
@@ -127,7 +127,7 @@ public class LevelManager : MonoBehaviour
         isPaused = false;
         Time.timeScale = 1f;
 
-        Debug.Log("RESUME GAME");
+        //Debug.Log("RESUME GAME");
         if (pausePanel != null)
             pausePanel.SetActive(false);
 
@@ -144,7 +144,7 @@ public class LevelManager : MonoBehaviour
         if (pausePanel != null)
             pausePanel.SetActive(false);
 
-       // StartCoroutine(LoadSceneDelayed(menuScene, delay));
+       StartCoroutine(LoadSceneDelayed(menuScene, delay));
     }
 
     private PlayerPauseHandler GetPlayerHandler()
