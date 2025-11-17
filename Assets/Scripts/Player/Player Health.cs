@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
@@ -32,8 +33,8 @@ public class PlayerHealth : MonoBehaviour
 
         UpdateHealthBar();
 
-        //if (currentHealth <= 0)
-            //Die();
+        if (currentHealth <= 0)
+            Die();
     }
 
     private void UpdateHealthBar()
@@ -53,18 +54,15 @@ public class PlayerHealth : MonoBehaviour
 
     }
 
-    /*private void Die()
+    private void Die()
     {
         Debug.Log("Player died.");
-        
-        if (GameManager.Instance != null)
-            GameManager.Instance.GameOver();
 
-        /*Destroy(gameObject);
+        PlayerPrefs.SetString("GameResult", "Game Over");
 
-        GameObject music = GameObject.Find("BackgroundMusic");
-        if (music != null)
-            Destroy(music);
-    }*/
+        LevelManager.instance.LoadScene("ResultScene");
+
+        Destroy(gameObject);
+    }
 
 }
