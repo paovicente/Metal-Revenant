@@ -2,36 +2,37 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    private float speed = 5f;
-    private float lifeTime = 2f;
+    [SerializeField] private float speed = 6f;
+    private Vector2 direction;
 
-    [SerializeField] private int damage = 10;
+    private int damage = 10;
 
-    private void OnEnable()
+    public void Shoot(Vector2 dir)
     {
-        Invoke(nameof(Deactivate), lifeTime);
+        direction = dir.normalized;
+        gameObject.SetActive(true);
     }
 
     private void Update()
     {
-        transform.Translate(Vector2.right * speed * Time.deltaTime);
+        transform.Translate(direction * speed * Time.deltaTime);
+
+        if (Mathf.Abs(transform.position.x) > 40 || Mathf.Abs(transform.position.y) > 40)
+            gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+
         if (other.CompareTag("Player"))
         {
-            PlayerHealth player = other.gameObject.GetComponent<PlayerHealth>();
-            if (player != null)
-                player.TakeDamage(damage);
-        }
-        Deactivate();
-    }
 
-    private void Deactivate()
-    {
-        CancelInvoke();
-        gameObject.SetActive(false);
+            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+                playerHealth.TakeDamage(damage); 
+
+            gameObject.SetActive(false);
+        }
+
     }
 }
-
