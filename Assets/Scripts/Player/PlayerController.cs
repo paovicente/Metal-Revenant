@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference jumpAction;
     [SerializeField] private InputActionReference dashAction;
+    [SerializeField] private InputActionReference shootAction;
 
     [SerializeField] private Rigidbody2D playerRigidbody;
     [SerializeField] private Animatorcontroller playerAnimator;
@@ -42,6 +43,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashDuration = 0.2f;
     [SerializeField] private float dashCooldown = 1f;
     private float lastDashTime = -10f;
+
+    [Header("Shooting")]
+    [SerializeField] private Transform firepoint;
+    [SerializeField] private float bulletSpeed = 10f;
+    [SerializeField] private float shootCooldown = 0.5f;
+    private float lastShootTime = -10f;
+
 
     private void Start()
     {
@@ -154,6 +162,31 @@ public class PlayerController : MonoBehaviour
         }
 
         isDashing = false;
+    }
+
+    private void HandleShootInput(InputAction.CallbackContext context)
+    {
+        if (!context.started) return;
+
+        if (Time.time < lastShootTime + shootCooldown)
+        {
+            return;
+        }
+        lastShootTime = Time.time;
+
+        GameObject bullet = BulletPool.Instance.GetBullet();
+
+        bullet.transform.position = firepoint.position;
+
+        float direction = playerSpriteRenderer.flipX ? -1f : 1f;
+
+        Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
+        if (bulletRb !=null)
+        {
+            bulletRb.linearVelocity = new Vector3(direction, 1f, 1f);
+        }
+
+        bullet.transform.localScale = new Vector3(direction, 1f, 1f);
     }
 
     /// <summary>

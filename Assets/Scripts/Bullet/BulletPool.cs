@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BulletPool : MonoBehaviour
 {
-    public static BulletPool Instance;
+    public static BulletPool Instance; 
 
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private int poolSize = 20;
@@ -43,4 +43,9 @@ public class BulletPool : MonoBehaviour
         bullets.Add(bulletInstance);
         return bulletInstance;
     }
+    public void ReturnBullet(GameObject bulletToReturn) 
+    {
+        bulletToReturn.SetActive(false);
+    }
+
 }
