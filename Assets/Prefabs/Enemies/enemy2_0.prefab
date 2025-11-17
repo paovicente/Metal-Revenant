@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2002722936392886469}
   m_Layer: 0
   m_Name: enemy2_0
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -103,8 +103,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firePoint: {fileID: 596858837185609227}
-  fireRate: 1
+  fireRate: 1.5
   detectionRangeX: 5
+  detectionRangeY: 8
 --- !u!50 &7651354642033179247
 Rigidbody2D:
   serializedVersion: 5
