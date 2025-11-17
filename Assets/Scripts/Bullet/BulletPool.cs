@@ -7,6 +7,7 @@ public class BulletPool : MonoBehaviour
 
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private int poolSize = 20;
+    [SerializeField] private Transform parentPosition;
 
     private List<GameObject> bullets;
 
@@ -20,7 +21,7 @@ public class BulletPool : MonoBehaviour
         bullets = new List<GameObject>();
         for (int i = 0; i < poolSize; i++)
         {
-            GameObject bullet = Instantiate(bulletPrefab);
+            GameObject bullet = Instantiate(bulletPrefab,parentPosition);
             bullet.SetActive(false);
             bullets.Add(bullet);
         }
@@ -37,7 +38,7 @@ public class BulletPool : MonoBehaviour
             }
         }
 
-        GameObject bulletInstance = Instantiate(bulletPrefab);
+        GameObject bulletInstance = Instantiate(bulletPrefab, parentPosition);
         bulletInstance.SetActive(true);
         bullets.Add(bulletInstance);
         return bulletInstance;
