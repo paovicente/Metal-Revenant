@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletPool : MonoBehaviour
+public class BulletPoolPlayer : MonoBehaviour
 {
-    public static BulletPool Instance; 
+    public static BulletPoolPlayer Instance;
 
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private int poolSize = 20;
@@ -20,7 +20,7 @@ public class BulletPool : MonoBehaviour
         bullets = new List<GameObject>();
         for (int i = 0; i < poolSize; i++)
         {
-            GameObject bullet = Instantiate(bulletPrefab,parentPosition);
+            GameObject bullet = Instantiate(bulletPrefab, parentPosition);
             bullet.SetActive(false);
             bullets.Add(bullet);
         }
@@ -42,7 +42,7 @@ public class BulletPool : MonoBehaviour
         bullets.Add(bulletInstance);
         return bulletInstance;
     }
-    public void ReturnBullet(GameObject bulletToReturn) 
+    public void ReturnBullet(GameObject bulletToReturn)
     {
         bulletToReturn.SetActive(false);
     }
