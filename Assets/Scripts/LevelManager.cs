@@ -102,11 +102,22 @@ public class LevelManager : MonoBehaviour
         activeScene = SceneManager.GetSceneByName(sceneName);
         SceneManager.SetActiveScene(activeScene);
 
-        
-        yield return SceneManager.UnloadSceneAsync(previousScene);   
+        Debug.Log("previous scene: " + previousScene.name);
+        yield return UnloadAllScenesExceptBoot();
     }
-    
 
+    private IEnumerator UnloadAllScenesExceptBoot()
+    {
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            Scene s = SceneManager.GetSceneAt(i);
+
+            if (s.name != "Boot" && s.isLoaded)
+            {
+                yield return SceneManager.UnloadSceneAsync(s);
+            }
+        }
+    }
     public void PauseGame()
     {
         isPaused = true;
