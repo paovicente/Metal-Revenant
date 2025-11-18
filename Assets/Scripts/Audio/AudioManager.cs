@@ -10,6 +10,7 @@ public class AudioManager : MonoBehaviour
 
     private float currentMusic = 1f;
     private float currentSFX = 1f;
+    private float currentPlayer = 1f;
 
     private void Awake()
     {
@@ -30,6 +31,7 @@ public class AudioManager : MonoBehaviour
     {
         masterMixer.SetFloat("MusicVolume", Mathf.Log10(currentMusic) * 20f);
         masterMixer.SetFloat("SFXVolume", Mathf.Log10(currentSFX) * 20f);
+        masterMixer.SetFloat("PlayerVolume", Mathf.Log10(currentPlayer) * 20f);
     }
 
     public void SetMusic(float value)
@@ -43,8 +45,14 @@ public class AudioManager : MonoBehaviour
         currentSFX = value;
         ApplyVolumes();
     }
+    public void SetPlayerSound(float value)
+    {
+        currentPlayer = value;
+        ApplyVolumes();
+    }
 
     //lets the UI read the current values
     public float GetMusic() => currentMusic;
     public float GetSFX() => currentSFX;
+    public float GetPlayerSound() => currentPlayer;
 }

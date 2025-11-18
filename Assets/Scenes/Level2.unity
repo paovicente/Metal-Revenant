@@ -44340,6 +44340,14 @@ PrefabInstance:
       propertyPath: healthBarFill
       value: 
       objectReference: {fileID: 720820016}
+    - target: {fileID: 9114314606246934656, guid: 168835ac0a5e7ec4995c1ec4e54abf01, type: 3}
+      propertyPath: runClip
+      value: 
+      objectReference: {fileID: 8300000, guid: e4e690c63850527439e2354261c2e0e7, type: 3}
+    - target: {fileID: 9114314606246934656, guid: 168835ac0a5e7ec4995c1ec4e54abf01, type: 3}
+      propertyPath: jumpClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 44c88ec66505c774a8644a9fdf84c080, type: 3}
     m_RemovedComponents:
     - {fileID: 5687344813108351443, guid: 168835ac0a5e7ec4995c1ec4e54abf01, type: 3}
     - {fileID: 7204640539911049831, guid: 168835ac0a5e7ec4995c1ec4e54abf01, type: 3}

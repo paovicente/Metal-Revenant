@@ -29689,7 +29689,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: f5575a788c1e9bf46a4030d15a8ff37b, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -33325,6 +33325,10 @@ PrefabInstance:
       propertyPath: scoreText
       value: 
       objectReference: {fileID: 377835176}
+    - target: {fileID: 2697756560147481986, guid: 168835ac0a5e7ec4995c1ec4e54abf01, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -9122729864465196648, guid: 4cd7f461aecf95c4db24bdcbbe7583e7, type: 2}
     - target: {fileID: 2796331200622508228, guid: 168835ac0a5e7ec4995c1ec4e54abf01, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -33401,6 +33405,18 @@ PrefabInstance:
       propertyPath: healthBarFill
       value: 
       objectReference: {fileID: 720820016}
+    - target: {fileID: 9114314606246934656, guid: 168835ac0a5e7ec4995c1ec4e54abf01, type: 3}
+      propertyPath: runClip
+      value: 
+      objectReference: {fileID: 8300000, guid: e4e690c63850527439e2354261c2e0e7, type: 3}
+    - target: {fileID: 9114314606246934656, guid: 168835ac0a5e7ec4995c1ec4e54abf01, type: 3}
+      propertyPath: jumpClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 44c88ec66505c774a8644a9fdf84c080, type: 3}
+    - target: {fileID: 9114314606246934656, guid: 168835ac0a5e7ec4995c1ec4e54abf01, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 5511204798841425905}
     m_RemovedComponents:
     - {fileID: 7204640539911049831, guid: 168835ac0a5e7ec4995c1ec4e54abf01, type: 3}
     - {fileID: 2081875388163180835, guid: 168835ac0a5e7ec4995c1ec4e54abf01, type: 3}
@@ -33414,6 +33430,11 @@ PrefabInstance:
       addedObject: {fileID: 1644415367}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 168835ac0a5e7ec4995c1ec4e54abf01, type: 3}
+--- !u!82 &5511204798841425905 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 2697756560147481986, guid: 168835ac0a5e7ec4995c1ec4e54abf01, type: 3}
+  m_PrefabInstance: {fileID: 5511204798841425904}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

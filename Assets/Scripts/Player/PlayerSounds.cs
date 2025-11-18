@@ -28,11 +28,11 @@ public class PlayerSounds : MonoBehaviour
 
     private void HandleJumpSound()
     {
-        // Si está subiendo y no estaba en el suelo justo antes → saltó
+
         if (player.IsJumping() && jumpClip != null)
         {
             audioSource.pitch = Random.Range(minPitch, maxPitch);
-            audioSource.PlayOneShot(jumpClip);
+            audioSource.PlayOneShot(jumpClip,0.04f);
         }
     }
 
@@ -44,8 +44,8 @@ public class PlayerSounds : MonoBehaviour
         {
             audioSource.clip = runClip;
             audioSource.loop = true;
-            audioSource.volume = 0.1f;
-            audioSource.pitch = Random.Range(minPitch, maxPitch);
+            audioSource.volume = 1f;
+            //audioSource.pitch = Random.Range(minPitch, maxPitch);
             audioSource.Play();
         }
         else if (!isRunning && wasRunning)
