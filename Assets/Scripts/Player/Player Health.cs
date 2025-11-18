@@ -1,71 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-/*
-public class PlayerHealth : MonoBehaviour
-{
-    public int maxHealth = 100;
-    private int currentHealth;
 
-    public Image healthBarFill;
-
-    [Header("Damage Settings")]
-    public float damageCooldown = 2f; // 2 second of invulnerability
-    private float lastDamageTime = -10f; // so player can take damage at start
-
-    private void Start()
-    {
-        currentHealth = maxHealth;
-        UpdateHealthBar();
-    }
-
-    //public function to receive damage
-    public void TakeDamage(int damage)
-    {
-        if (Time.time - lastDamageTime < damageCooldown)
-            return; // still in cooldown, ignore damage
-
-        currentHealth -= damage;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        lastDamageTime = Time.time; // reset cooldown
-        
-        Debug.Log("Player took damage: " + damage + ". Current health: " + currentHealth);
-
-        UpdateHealthBar();
-
-        if (currentHealth <= 0)
-            Die();
-    }
-
-    private void UpdateHealthBar()
-    {
-        if (healthBarFill != null)
-        {
-            float fillAmount = (float)currentHealth / maxHealth;
-            healthBarFill.fillAmount = fillAmount;
-
-            if (fillAmount > 0.6f)
-                healthBarFill.color = Color.green;   
-            else if (fillAmount > 0.3f)
-                healthBarFill.color = Color.yellow; 
-            else
-                healthBarFill.color = Color.red;     
-        }
-
-    }
-
-    private void Die()
-    {
-        Debug.Log("Player died.");
-
-        PlayerPrefs.SetString("GameResult", "Game Over");
-
-        LevelManager.instance.LoadScene("ResultScene");
-
-        Destroy(gameObject);
-    }
-
-}*/
 public class PlayerHealth : MonoBehaviour
 {
     public int maxHealth = 100;
@@ -79,16 +15,30 @@ public class PlayerHealth : MonoBehaviour
 
     private void Start()
     {
-        if (PlayerPrefs.HasKey("PlayerHealth"))                      
-            currentHealth = PlayerPrefs.GetInt("PlayerHealth");      
-        else
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        // Si empezás el Nivel 1, siempre vida máxima
+        if (sceneName == "Level1")
+        {
             currentHealth = maxHealth;
+            PlayerPrefs.SetInt("PlayerHealth", currentHealth);
+            PlayerPrefs.Save();
+        }
+        else
+        {
+            // En niveles posteriores mantenés la vida
+            if (PlayerPrefs.HasKey("PlayerHealth"))
+                currentHealth = PlayerPrefs.GetInt("PlayerHealth");
+            else
+                currentHealth = maxHealth;
+        }
 
         UpdateHealthBar();
     }
 
     public void TakeDamage(int damage)
     {
+        Debug.Log("Recibiste daño!");
         if (Time.time - lastDamageTime < damageCooldown)
             return;
 
@@ -96,16 +46,24 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         lastDamageTime = Time.time;
 
-        Debug.Log("Player took damage: " + damage + ". Current health: " + currentHealth);
-
         UpdateHealthBar();
 
-        //save life each time it is modified
-        PlayerPrefs.SetInt("PlayerHealth", currentHealth);           
-        PlayerPrefs.Save();                                          
+        PlayerPrefs.SetInt("PlayerHealth", currentHealth);
+        PlayerPrefs.Save();
 
         if (currentHealth <= 0)
             Die();
+    }
+
+    public void Heal(int amount)
+    {
+        currentHealth += amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        UpdateHealthBar();
+
+        PlayerPrefs.SetInt("PlayerHealth", currentHealth);
+        PlayerPrefs.Save();
     }
 
     private void UpdateHealthBar()
@@ -115,23 +73,17 @@ public class PlayerHealth : MonoBehaviour
             float fillAmount = (float)currentHealth / maxHealth;
             healthBarFill.fillAmount = fillAmount;
 
-            if (fillAmount > 0.6f)
-                healthBarFill.color = Color.green;
-            else if (fillAmount > 0.3f)
-                healthBarFill.color = Color.yellow;
-            else
-                healthBarFill.color = Color.red;
+            healthBarFill.color =
+                fillAmount > 0.6f ? Color.green :
+                fillAmount > 0.3f ? Color.yellow :
+                Color.red;
         }
     }
 
     private void Die()
     {
-        Debug.Log("Player died.");
-
         PlayerPrefs.SetString("GameResult", "Game Over");
-
-        //reset life when the player die
-        PlayerPrefs.DeleteKey("PlayerHealth");                       
+        PlayerPrefs.DeleteKey("PlayerHealth");
 
         LevelManager.instance.LoadScene("ResultScene");
 
