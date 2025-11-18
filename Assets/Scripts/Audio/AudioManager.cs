@@ -8,7 +8,7 @@ public class AudioManager : MonoBehaviour
     [Header("Mixer")]
     public AudioMixer masterMixer;
 
-    private float currentMusic = 1f;
+    private float currentMusic = 0.5f;
     private float currentSFX = 1f;
     private float currentPlayer = 1f;
 

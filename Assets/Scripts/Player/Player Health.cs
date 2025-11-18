@@ -51,6 +51,7 @@ public class PlayerHealth : MonoBehaviour
         PlayerPrefs.SetInt("PlayerHealth", currentHealth);
         PlayerPrefs.Save();
 
+        Debug.Log("vida: " + currentHealth);
         if (currentHealth <= 0)
             Die();
     }
@@ -84,7 +85,7 @@ public class PlayerHealth : MonoBehaviour
     {
         PlayerPrefs.SetString("GameResult", "Game Over");
         PlayerPrefs.DeleteKey("PlayerHealth");
-
+        
         LevelManager.instance.LoadScene("ResultScene");
 
         Destroy(gameObject);
