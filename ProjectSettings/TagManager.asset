@@ -6,6 +6,8 @@ TagManager:
   tags:
   - EnemyPatrol
   - Enemy
+  - Bullet
+  - Bullet-Enemy
   layers:
   - Default
   - TransparentFX
@@ -13,11 +15,11 @@ TagManager:
   - Ground
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - EnemyPatrol
+  - Bullet
+  - BulletEnemy
+  - Enemy
   - 
   - 
   - 

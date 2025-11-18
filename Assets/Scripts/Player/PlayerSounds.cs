@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerSounds : MonoBehaviour
 {
-    private PlayerController playerController;
+    private PlayerController player;
 
     [Header("Audio References")]
     [SerializeField] private AudioSource audioSource;
@@ -13,67 +13,48 @@ public class PlayerSounds : MonoBehaviour
     [SerializeField] private float minPitch = 0.9f;
     [SerializeField] private float maxPitch = 1.2f;
 
+    private bool wasRunning = false;
+
     private void Start()
     {
-        playerController = GetComponent<PlayerController>();
-
-        if (playerController != null)
-        {
-            playerController.OnJumped += PlayJumpSound;
-            playerController.OnRunning += PlayRunSound;
-            playerController.OnStopRunning += StopRunLoop;
-        }
+        player = GetComponent<PlayerController>();
     }
 
-    private void PlayJumpSound()
+    private void Update()
     {
+        HandleJumpSound();
+        HandleRunSound();
+    }
 
-        if (LevelManager.instance != null && LevelManager.instance.isPaused)
-            return;
-
-        if (audioSource != null && jumpClip != null)
+    private void HandleJumpSound()
+    {
+        // Si está subiendo y no estaba en el suelo justo antes → saltó
+        if (player.IsJumping() && jumpClip != null)
         {
             audioSource.pitch = Random.Range(minPitch, maxPitch);
             audioSource.PlayOneShot(jumpClip);
         }
     }
 
-    private void PlayRunSound()
+    private void HandleRunSound()
     {
-        if (LevelManager.instance != null && LevelManager.instance.isPaused)
-            return;
+        bool isRunning = player.IsRunning();
 
-        if (audioSource != null && runClip != null)
+        if (isRunning && !wasRunning)
         {
             audioSource.clip = runClip;
             audioSource.loop = true;
-            audioSource.pitch = Random.Range(minPitch, maxPitch);
             audioSource.volume = 0.1f;
+            audioSource.pitch = Random.Range(minPitch, maxPitch);
             audioSource.Play();
         }
-    }
-
-    private void StopRunLoop()
-    {
-        if (LevelManager.instance != null && LevelManager.instance.isPaused)
-            return;
-
-        if (audioSource != null && audioSource.isPlaying)
+        else if (!isRunning && wasRunning)
         {
             audioSource.Stop();
             audioSource.loop = false;
             audioSource.volume = 1f;
         }
-    }
 
-    private void OnDestroy()
-    {
-        if (playerController != null)
-        {
-            playerController.OnJumped -= PlayJumpSound;
-            playerController.OnRunning -= PlayRunSound;
-            playerController.OnStopRunning -= StopRunLoop;
-        }
+        wasRunning = isRunning;
     }
-    
 }

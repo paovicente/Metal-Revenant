@@ -280,6 +280,8 @@ GameObject:
   - component: {fileID: 3424208598911730268}
   - component: {fileID: 8891782329025157341}
   - component: {fileID: 7204640539911049831}
+  - component: {fileID: 5687344813108351443}
+  - component: {fileID: 2081875388163180835}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -564,31 +566,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ea10cc5059dbde42928e9f16b90bbbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveAction: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  jumpAction: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  dashAction: {fileID: -7471211009204490832, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  shootAction: {fileID: 0}
-  playerRigidbody: {fileID: 7221421791143330945}
-  playerAnimator: {fileID: 7210593051079961520}
-  playerSpriteRenderer: {fileID: 2796331200622508228}
+  rb: {fileID: 7221421791143330945}
+  animator: {fileID: 247681031922127692}
+  sprite: {fileID: 2796331200622508228}
+  moveSpeed: 7
+  acceleration: 50
+  deceleration: 60
+  jumpForce: 7
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  groundCheckRadius: {x: 0.8, y: 0.1}
-  groundBoxOffset: {x: 0, y: -0.5}
-  playerSpeed: 2
-  jumpForce: 8
-  isIdle: 0
-  isRunning: 0
-  isJumping: 0
-  isFalling: 0
-  isDashing: 0
-  dashSpeed: 10
-  dashDuration: 0.2
+  groundCheck: {fileID: 0}
+  groundCheckRadius: 0.05
+  fallMultiplier: 3
+  lowJumpMultiplier: 2
+  dashSpeed: 8
+  dashTime: 0.2
   dashCooldown: 1
-  firepoint: {fileID: 0}
-  bulletSpeed: 10
-  shootCooldown: 0.5
 --- !u!114 &9114314606246934656
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -667,3 +661,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02db1d481df859646990b0b48eec1ae5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5687344813108351443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8456328266950127743}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78cdd236ec5d6214cb72241f592f7142, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firePoint: {fileID: 0}
+  shootAction: {fileID: 4393329526291057478, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  spriteRenderer: {fileID: 2796331200622508228}
+  playerRb: {fileID: 7221421791143330945}
+  fireRate: 0.8
+  aimAtMouse: 1
+  recoilForce: 0
+  powerupFireRateMultiplier: 0.2
+  playerSprite: {fileID: 2796331200622508228}
+  powerupColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  blinkInterval: 0.2
+--- !u!114 &2081875388163180835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8456328266950127743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8da4dd41d5a2bec4085dc5c5d6e2b426, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreText: {fileID: 0}

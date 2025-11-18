@@ -1,52 +1,127 @@
 using UnityEngine;
+using System.Collections;
 
 public class EnemyPatrol : MonoBehaviour
 {
-    [Header("Enemy Settings")]
-    [SerializeField] private float speed = 2.0f;
-    [SerializeField] private SpriteRenderer enemySpriteRenderer;
-
+    [Header("Patrol Settings")]
+    [SerializeField] private float speed = 2f;
     [SerializeField] private float leftLimit = 6f;
     [SerializeField] private float rightLimit = 20f;
 
-    private bool movingRight = false;
-    private float targetLimit; //the limit enemy is moving toward
+    [Header("Enemy Stats")]
+    [SerializeField] private int maxHits = 2;         // cantidad de disparos para morir
+    [SerializeField] private int damageToPlayer = 15; // daño al jugador
 
-    public int damage = 5;
+    [Header("References")]
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private Color hitColor = new Color(1, 0.3f, 0.3f); // color del blink
+    private Color originalColor;
+
+    private bool movingRight = false;
+    private int currentHits = 0;
+    private bool isDead = false;
 
     private void Start()
     {
-        targetLimit = leftLimit;
-        enemySpriteRenderer.flipX = false;
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+
+        originalColor = spriteRenderer.color;
     }
 
     private void Update()
     {
-        float moveDir = movingRight ? 1f : -1f;
-        transform.Translate(Vector3.right * moveDir * speed * Time.deltaTime);
+        if (isDead) return;
 
-        //check if we reached current target limit
-        if ((movingRight && transform.position.x >= targetLimit) || (!movingRight && transform.position.x <= targetLimit))
+        float dir = movingRight ? 1 : -1;
+        transform.Translate(Vector3.right * dir * speed * Time.deltaTime);
+
+        if (movingRight && transform.position.x >= rightLimit)
+            FlipDirection(false);
+        else if (!movingRight && transform.position.x <= leftLimit)
+            FlipDirection(true);
+    }
+
+    private void FlipDirection(bool toRight)
+    {
+        movingRight = toRight;
+        spriteRenderer.flipX = movingRight;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(new Vector3(leftLimit, transform.position.y - 0.5f),
+                        new Vector3(leftLimit, transform.position.y + 0.5f));
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(new Vector3(rightLimit, transform.position.y - 0.5f),
+                        new Vector3(rightLimit, transform.position.y + 0.5f));
+    }
+
+    // ------------------------------------------
+    //   COLISIÓN CON EL JUGADOR
+    // ------------------------------------------
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (isDead) return;
+
+        if (collision.gameObject.CompareTag("Player"))
         {
-            //swap direction when reaching limit
-            movingRight = !movingRight;
-            targetLimit = movingRight ? rightLimit : leftLimit;
-            enemySpriteRenderer.flipX = movingRight;
+            PlayerHealth health = collision.gameObject.GetComponent<PlayerHealth>();
+            if (health != null)
+                health.TakeDamage(damageToPlayer);
+
+            // cambiar de dirección al chocar
+            FlipDirection(!movingRight);
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+
+    // ------------------------------------------
+    //  COLISIÓN CON BALAS
+    // ------------------------------------------
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (isDead) return;
+
+        if (collision.CompareTag("Bullet"))
         {
-            PlayerHealth player = collision.gameObject.GetComponent<PlayerHealth>();
-            if (player != null)
-                player.TakeDamage(damage);
-
-            movingRight = !movingRight;
-
-            targetLimit = movingRight ? rightLimit : leftLimit;
-            enemySpriteRenderer.flipX = movingRight;
+            TakeHit();
+            collision.gameObject.SetActive(false); // Desactivamos la bala al impactar
         }
+    }
+
+    private void TakeHit()
+    {
+        currentHits++;
+
+        StartCoroutine(BlinkFeedback());
+
+        if (currentHits >= maxHits)
+            Die();
+    }
+
+    // ------------------------------------------
+    //   FEEDBACK DE IMPACTO
+    // ------------------------------------------
+    private IEnumerator BlinkFeedback()
+    {
+        spriteRenderer.color = hitColor;
+        yield return new WaitForSeconds(0.1f);
+        spriteRenderer.color = originalColor;
+    }
+
+    // ------------------------------------------
+    //   MUERTE DEL ENEMIGO
+    // ------------------------------------------
+    private void Die()
+    {
+        isDead = true;
+
+        // podés poner animación de muerte acá
+        // animator.SetTrigger("Die");
+
+        Destroy(gameObject, 0.15f);
     }
 }

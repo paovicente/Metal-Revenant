@@ -1,253 +1,216 @@
-using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private InputActionReference moveAction;
-    [SerializeField] private InputActionReference jumpAction;
-    [SerializeField] private InputActionReference dashAction;
-    [SerializeField] private InputActionReference shootAction;
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer sprite;
 
-    [SerializeField] private Rigidbody2D playerRigidbody;
-    [SerializeField] private Animatorcontroller playerAnimator;
-    [SerializeField] private SpriteRenderer playerSpriteRenderer;
+    [Header("Movement")]
+    [SerializeField] private float moveSpeed = 7f;
+    [SerializeField] private float acceleration = 50f;
+    [SerializeField] private float deceleration = 60f;
 
-    [Header("Ground Check")]
+    private float moveInput;
+    private float currentSpeed;
+
+    [Header("Jump")]
+    [SerializeField] private float jumpForce = 14f;
     [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Vector2 groundCheckRadius = new Vector2(0.8f, 0.1f);
-    [SerializeField] private Vector2 groundBoxOffset = new Vector2(0f, -0.5f);
-
-    [Header("Player Variables")]
-    [SerializeField] private float playerSpeed = 2f;
-    [SerializeField] private float jumpForce = 8f;
-
-    public event Action OnJumped;
-    public event Action OnRunning;
-    public event Action OnStopRunning;
-
-    public bool isIdle;
-    public bool isRunning;
-    public bool isJumping;
-    public bool isFalling = false;
-    public bool isDashing;
-    private bool wasRunning = false;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundCheckRadius = 0.2f;
 
     private bool isGrounded;
-    private Vector2 moveInput;
+    private float originalGravity;
+
+    [Header("Better Jump")]
+    [SerializeField] private float fallMultiplier = 2.5f;
+    [SerializeField] private float lowJumpMultiplier = 2f;
 
     [Header("Dash")]
-    [SerializeField] private float dashSpeed = 10f;
-    [SerializeField] private float dashDuration = 0.2f;
-    [SerializeField] private float dashCooldown = 1f;
+    [SerializeField] private float dashSpeed = 20f;
+    [SerializeField] private float dashTime = 0.15f;
+    [SerializeField] private float dashCooldown = 0.5f;
+
+    private bool isDashing;
     private float lastDashTime = -10f;
-
-    [Header("Shooting")]
-    [SerializeField] private Transform firepoint;
-    [SerializeField] private float bulletSpeed = 10f;
-    [SerializeField] private float shootCooldown = 0.5f;
-    private float lastShootTime = -10f;
-
 
     private void Start()
     {
-        moveAction.action.started += HandleMoveInput;
-        moveAction.action.performed += HandleMoveInput;
-        moveAction.action.canceled += HandleMoveInput;
-
-        jumpAction.action.started += HandleJumpInput;
-
-        dashAction.action.started += HandleDashInput;
+        originalGravity = rb.gravityScale;
     }
-
-    private void OnEnable()
-    {
-        jumpAction.action.started += HandleJumpInput;
-    }
-
-    private void OnDisable()
-    {
-        jumpAction.action.started -= HandleJumpInput;
-    }
-
 
     private void Update()
     {
-        GroundCheck();
-        UpdateStates();
-
-        playerAnimator.UpdateAnimation(
-            isRunning,
-            isIdle,
-            isJumping,
-            isDashing,
-            isFalling
-        );
+        ReadInputs();
+        CheckGround();
+        ApplyBetterJump();
+        UpdateAnimator();
     }
-
-    /*MovePlayer() is called in FixedUpdate because Rigidbody movement must run in the physics loop.
-    This ensures smooth. We skip it during dash to avoid overriding dash velocity*/
 
     private void FixedUpdate()
     {
         if (!isDashing)
-            MovePlayer();
+            Move();
     }
 
-    // ----------- INPUT FUNCTIONS -----------
-
-    private void HandleMoveInput(InputAction.CallbackContext context)
+    // --------------------------------------------------
+    // INPUTS
+    // --------------------------------------------------
+    private void ReadInputs()
     {
-        moveInput = context.ReadValue<Vector2>();
+        moveInput = Input.GetAxisRaw("Horizontal");
 
-        playerSpriteRenderer.flipX = moveInput.x < 0;
+        if (Input.GetButtonDown("Jump"))
+            Jump();
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+            TryDash();
     }
 
-    private void HandleJumpInput(InputAction.CallbackContext context)
+    // --------------------------------------------------
+    // MOVEMENT
+    // --------------------------------------------------
+    private void Move()
     {
-        if (!context.started) return;
+        float targetSpeed = moveInput * moveSpeed;
 
-        if (isGrounded)
+        if (Mathf.Abs(targetSpeed) > 0.1f)
+            currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, acceleration * Time.fixedDeltaTime);
+        else
+            currentSpeed = Mathf.MoveTowards(currentSpeed, 0, deceleration * Time.fixedDeltaTime);
+
+        rb.linearVelocity = new Vector2(currentSpeed, rb.linearVelocity.y);
+
+        if (moveInput != 0)
+            sprite.flipX = moveInput < 0;
+    }
+
+    // --------------------------------------------------
+    // JUMP
+    // --------------------------------------------------
+    private void Jump()
+    {
+        if (!isGrounded || isDashing) return;
+
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+    }
+
+    private void CheckGround()
+    {
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+    }
+
+    // --------------------------------------------------
+    // BETTER JUMP (makes jumps feel tight and responsive)
+    // --------------------------------------------------
+    private void ApplyBetterJump()
+    {
+        if (isDashing) return;
+
+        // Caída más rápida
+        if (rb.linearVelocity.y < 0)
         {
-            playerRigidbody.linearVelocity =
-                new Vector2(playerRigidbody.linearVelocity.x, jumpForce);
-
-            isJumping = true;
-            isFalling = false;
-
-            OnJumped?.Invoke();
+            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+        }
+        // Salto corto (si soltás la tecla de salto)
+        else if (rb.linearVelocity.y > 0 && !Input.GetButton("Jump"))
+        {
+            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
         }
     }
 
-    /// <summary>
-    /// Allow dash only if not currently dashing and the cooldown has fully elapsed.
-    /// </summary>
-    private void HandleDashInput(InputAction.CallbackContext context)
+    // --------------------------------------------------
+    // DASH
+    // --------------------------------------------------
+    private void TryDash()
     {
-        if (!context.started) return;
+        if (Time.time < lastDashTime + dashCooldown) return;
+        if (isDashing) return;
 
-        if (!isDashing && Time.time >= lastDashTime + dashCooldown)
-        {
-            StartCoroutine(PerformDash());
-        }
+        // Leer input de dash (Horizontal y Vertical)
+        float dashX = Input.GetAxisRaw("Horizontal");
+        float dashY = Input.GetAxisRaw("Vertical");
+
+        // Si no hay input, dash hacia adelante según el sprite
+        if (Mathf.Approximately(dashX, 0f) && Mathf.Approximately(dashY, 0f))
+            dashX = sprite.flipX ? -1f : 1f;
+
+        Vector2 dashDirection = new Vector2(dashX, dashY).normalized;
+
+        StartCoroutine(DashRoutine(dashDirection));
     }
 
-    // ----------- MOVEMENT -----------
-
-    private void MovePlayer()
-    {
-        playerRigidbody.linearVelocity =
-            new Vector2(moveInput.x * playerSpeed, playerRigidbody.linearVelocity.y);
-    }
-
-    // ----------- DASH -----------
-
-    private IEnumerator PerformDash()
+    private System.Collections.IEnumerator DashRoutine(Vector2 direction)
     {
         isDashing = true;
         lastDashTime = Time.time;
 
-        float direction = Mathf.Sign(moveInput.x);
-        if (direction == 0)
-            direction = transform.localScale.x;
+        rb.gravityScale = 0;
+        rb.linearVelocity = direction * dashSpeed;
 
-        float elapsed = 0f;
-        while (elapsed < dashDuration)
-        {
-            playerRigidbody.linearVelocity = new Vector2(direction * dashSpeed, 0f);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
+        yield return new WaitForSeconds(dashTime);
 
+        rb.gravityScale = originalGravity;
         isDashing = false;
     }
 
-    private void HandleShootInput(InputAction.CallbackContext context)
+
+
+    private System.Collections.IEnumerator DashRoutine()
     {
-        if (!context.started) return;
+        isDashing = true;
+        lastDashTime = Time.time;
 
-        if (Time.time < lastShootTime + shootCooldown)
-        {
-            return;
-        }
-        lastShootTime = Time.time;
+        float direction = sprite.flipX ? -1 : 1;
 
-        GameObject bullet = BulletPool.Instance.GetBullet();
+        rb.gravityScale = 0;
+        rb.linearVelocity = new Vector2(direction * dashSpeed, 0);
 
-        bullet.transform.position = firepoint.position;
+        yield return new WaitForSeconds(dashTime);
 
-        float direction = playerSpriteRenderer.flipX ? -1f : 1f;
-
-        Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
-        if (bulletRb !=null)
-        {
-            bulletRb.linearVelocity = new Vector3(direction, 1f, 1f);
-        }
-
-        bullet.transform.localScale = new Vector3(direction, 1f, 1f);
+        rb.gravityScale = originalGravity;
+        isDashing = false;
     }
 
-    /// <summary>
-    /// Checks if the player is grounded using an OverlapBox under the collider
-    /// Updates isGrounded, and sets falling/jumping states based on vertical velocity
-    /// </summary>
-    private void GroundCheck()
+    // --------------------------------------------------
+    // ANIMATOR
+    // --------------------------------------------------
+    private void UpdateAnimator()
     {
-        BoxCollider2D col = GetComponent<BoxCollider2D>();
+        bool running = Mathf.Abs(rb.linearVelocity.x) > 0.1f;
+        bool jumping = rb.linearVelocity.y > 0.1f && !isGrounded;
+        bool falling = rb.linearVelocity.y < -0.1f && !isGrounded;
+        bool idle = !running && isGrounded && !isDashing;
 
-        Vector2 boxCenter = (Vector2)transform.position + new Vector2(0, -col.bounds.extents.y - 0.05f);
+        animator.SetBool("isIdle", idle);
+        animator.SetBool("isRunning", running);
+        animator.SetBool("isJumping", jumping);
+        animator.SetBool("isFalling", falling);
+        animator.SetBool("isDashing", isDashing);
+    }
 
-        Vector2 boxSize = new Vector2(col.bounds.size.x * 0.9f, 0.1f);
+    public bool IsRunning()
+    {
+        return Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded && !isDashing;
+    }
 
-        isGrounded = Physics2D.OverlapBox(
-            boxCenter,
-            boxSize,
-            0,
-            groundLayer
-        );
+    public bool IsJumping()
+    {
+        return rb.linearVelocity.y > 0.1f && !isGrounded;
+    }
 
-        Debug.Log("isGrounded: " + isGrounded);
 
-        if (isGrounded)
+    // --------------------------------------------------
+    // GIZMOS
+    // --------------------------------------------------
+    private void OnDrawGizmosSelected()
+    {
+        if (groundCheck != null)
         {
-            if (!isJumping)
-                isFalling = false;
-        }
-
-        if (!isGrounded && playerRigidbody.linearVelocity.y < -0.1f)
-        {
-            isFalling = true;
-            isJumping = false;
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
         }
     }
-
-    private void UpdateStates()
-    {
-        bool runningNow = moveInput.x != 0 && isGrounded;
-
-        if (runningNow && !wasRunning)
-            OnRunning?.Invoke();
-
-        if (!runningNow && wasRunning)
-            OnStopRunning?.Invoke();
-
-        wasRunning = runningNow;
-
-        isRunning = runningNow;
-        isIdle = moveInput.x == 0 && isGrounded && !isJumping;
-
-        if (isFalling) isRunning = false;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Vector2 boxCenter = (Vector2)transform.position + new Vector2(0, -0.45f);
-        Vector2 boxSize = new Vector2(0.7f, 0.1f);
-
-        Gizmos.DrawWireCube(boxCenter, boxSize);
-    }
-
 }
